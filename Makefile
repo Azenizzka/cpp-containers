@@ -44,7 +44,7 @@ LL_FLAGS := -lstdc++ -lm -lgtest
 
 VALGRIND_FLAGS := --leak-check=full --show-leak-kinds=all --leak-resolution=med --track-origins=yes -s
 
-########################################### <-- MAKEFILE --> ###########################################
+########################################### <-- CONSTANTS --> ###########################################
 
 .PHONY: all clean install run uninstall valgrind format check_format
 
@@ -68,6 +68,23 @@ FORMAT_STYLE := Google
 
 APP_BIN := $(APP_NAME).app
 TEST_BIN := $(APP_NAME)-test.app
+
+######################################## <-- MULTITHREADING --> ########################################
+
+
+UNAME := $(shell uname -s)
+
+ifeq ($(UNAME), Linux)
+  CORES := $(shell nproc)
+else ifeq ($(UNAME), Darwin)
+  CORES := $(shell sysctl -n hw.ncpu)
+else
+  CORES := 1
+endif
+
+export MAKEFLAGS="-j $(CORES)"
+
+############################################ <-- TARGETS --> ############################################
 
 all: test
 
